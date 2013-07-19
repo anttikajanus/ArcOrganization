@@ -20,7 +20,7 @@ Application shows newest WebMaps and Feature Services that are added into accoun
 ## Stuff used
 
 * ArcGIS Runtime for Windows Phone 10.1.1
-	* **Getting started and Beta registration**:http://resources.arcgis.com/en/communities/windows-phone-sdk/
+	* **Getting started**:http://resources.arcgis.com/en/communities/windows-phone-sdk/
 	* **API docs :** http://resources.arcgis.com/en/help/windows-phone-sdk/apiref/api_start.htm
 * ArcGIS Online
 	* http://www.arcgis.com/about/
