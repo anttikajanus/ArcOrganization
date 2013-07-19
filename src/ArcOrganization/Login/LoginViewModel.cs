@@ -143,7 +143,7 @@
         protected override void OnViewLoaded(object view)
         {
             _passwordBox = (view as LoginView).PasswordBox;
-            _passwordBox.Password = "0Caje5dev";
+            _passwordBox.Password = "PreviousCheckInIsChangedForNow:)";
             base.OnViewLoaded(view);
         }
     }
