@@ -1,0 +1,14 @@
+﻿<Application
+    x:Class="ArcOrganization.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:arcOrganization="clr-namespace:ArcOrganization">
+    <!--Application Resources-->
+    <Application.Resources>
+        <!-- Bootstrapper for the application -->
+        <arcOrganization:AppBootstrapper x:Key="Bootstrapper" />
+
+        <!-- Localization -->
+        <arcOrganization:LocalizedStrings x:Key="LocalizedStrings" />
+    </Application.Resources>
+</Application>
