@@ -1,13 +1,11 @@
 ﻿namespace ArcOrganization.Infrastructure.ViewModels
 {
-    using System.Device.Location;
     using System.Linq;
     using System.Threading.Tasks;
 
     using ArcOrganization.Infrastructure.Extensions;
 
     using ESRI.ArcGIS.Client;
-    using ESRI.ArcGIS.Client.Toolkit.DataSources;
     using ESRI.ArcGIS.Client.WebMap;
 
     public class WebMapScreenViewModel : MapScreenViewModel
@@ -67,15 +65,7 @@
             basemapLayer.SetValue(Document.IsBaseMapProperty, true);
             Layers.Add(basemapLayer);
 
-            await LoadWebMap(WebMapId);
-
-            var gpsLayer = new GpsLayer();
-            var geoCoordinateWatcher = new GeoCoordinateWatcher(GeoPositionAccuracy.Default) { MovementThreshold = 10 };
-            gpsLayer.GeoPositionWatcher = geoCoordinateWatcher;
-            gpsLayer.DisplayName = "Location";
-            gpsLayer.IsEnabled = true;
-            geoCoordinateWatcher.Start();
-            Layers.Add(gpsLayer);
+            await LoadWebMap(WebMapId); 
         }
 
         /// <summary>
@@ -114,9 +104,7 @@
             foreach (var layer in layersToAdd)
             {
                 Layers.Add(layer);
-            }
-
-            
+            }         
         }
     }
 }

@@ -25,7 +25,7 @@
     <phone:PhoneApplicationPage.Resources>
         <!-- Template for Panorama views Title -->
         <DataTemplate x:Key="TitleTemplate">
-            <StackPanel Margin="0, 50, 10, 5">
+            <StackPanel Margin="0, 50, 10, 0">
                 <TextBlock Text="{Binding LocalizedResources.HubViewTitle, Source={StaticResource LocalizedStrings}}"
                            Style="{StaticResource PhoneTextTitle2Style}" />
                 <TextBlock Text="{Binding LocalizedResources.HubViewSubtitle, Source={StaticResource LocalizedStrings}}"

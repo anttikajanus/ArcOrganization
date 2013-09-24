@@ -6,7 +6,7 @@
     using ArcOrganization.Infrastructure.ViewModels;
     using ArcOrganization.Resources;
     using ArcOrganization.Services;
-    using ArcOrganization.WepMap;
+    using ArcOrganization.WebMap;
 
     using Caliburn.Micro;
 
@@ -44,22 +44,27 @@
         /// Load Recent items asynchronously
         /// </summary>
         public override async Task LoadContentAsync()
-        {           
-            try
-            {
-                var results = await _portalService.GetNewestOrganizationWebMapsAsync();
-                if (results == null)
-                {
-                    return;
-                }
+        {
+            await Task.Run(
+                async () =>
+                    {
+                        try
+                        {
+                            var results = await _portalService.GetNewestOrganizationWebMapsAsync();
+                            if (results == null)
+                            {
+                                return;
+                            }
 
-                Items = new BindableCollection<ArcGISPortalItem>(results);
-                IsLoaded = true;
-            }
-            catch (Exception exception)
-            {
-                // TODO
-            }
+                            Items = new BindableCollection<ArcGISPortalItem>(results);
+                            IsLoaded = true;
+                        }
+                        catch (Exception exception)
+                        {
+                            // TODO
+                        }
+                    });
+
         }
       
     }

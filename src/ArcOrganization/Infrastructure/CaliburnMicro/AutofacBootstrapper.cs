@@ -17,6 +17,8 @@ using IContainer = Autofac.IContainer;
 
 namespace Caliburn.Micro.Autofac
 {
+    using System.Net;
+
     /// <summary>
     /// Autofac specific <see cref="PhoneBootstrapper"/> realization.
     /// </summary>

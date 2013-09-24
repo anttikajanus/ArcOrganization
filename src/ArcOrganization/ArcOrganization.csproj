@@ -113,15 +113,19 @@
     <Compile Include="Infrastructure\CaliburnMicro\AutofacBootstrapper.cs" />
     <Compile Include="Infrastructure\CaliburnMicro\AutofacPhoneContainer.cs" />
     <Compile Include="Infrastructure\Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Infrastructure\Converters\BytesToMegabytesTextConverter.cs" />
+    <Compile Include="Infrastructure\Converters\DateTimeYearDateTimeTextConverter.cs" />
     <Compile Include="Infrastructure\Converters\HtmlTextTrimContinousConverter.cs" />
     <Compile Include="Infrastructure\Converters\ImageSourceConverter.cs" />
     <Compile Include="Infrastructure\Converters\NotNullToCollapsedConverter.cs" />
     <Compile Include="Infrastructure\Converters\NullToCollapsedConverter.cs" />
+    <Compile Include="Infrastructure\Converters\StringToVisibilityConverter.cs" />
     <Compile Include="Infrastructure\Extensions\DocumentExtensions.cs" />
     <Compile Include="Infrastructure\Extensions\GeometryServiceExtensions.cs" />
     <Compile Include="Infrastructure\Extensions\IdentityManagerExtensions.cs" />
     <Compile Include="Infrastructure\Extensions\LayerExtensions.cs" />
     <Compile Include="Infrastructure\Extensions\PortalExtensions.cs" />
+    <Compile Include="Infrastructure\Extensions\QueryTaskExtensions.cs" />
     <Compile Include="Infrastructure\Extensions\UrlResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -129,7 +133,9 @@
     </Compile>
     <Compile Include="Infrastructure\IRefreshable.cs" />
     <Compile Include="Infrastructure\Extensions\MapExtensions.cs" />
+    <Compile Include="Infrastructure\LayerUtilities.cs" />
     <Compile Include="Infrastructure\MapPortalItem.cs" />
+    <Compile Include="Infrastructure\MessageService.cs" />
     <Compile Include="Infrastructure\ViewModels\ConductorViewModel.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -143,9 +149,6 @@
     </Compile>
     <Compile Include="Infrastructure\ViewModels\WebMapScreenViewModel.cs" />
     <Compile Include="LocalizedStrings.cs" />
-    <Compile Include="Login\LoginView.xaml.cs">
-      <DependentUpon>LoginView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Login\LoginViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\AppResources.Designer.cs">
@@ -159,10 +162,14 @@
       <DependentUpon>TextResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\PortalService.cs" />
-    <Compile Include="WepMap\WebMapView.xaml.cs">
+    <Compile Include="Settings\IProtectData.cs" />
+    <Compile Include="Settings\ISettingsStore.cs" />
+    <Compile Include="Settings\ProtectDataAdapter.cs" />
+    <Compile Include="Settings\SettingsStore.cs" />
+    <Compile Include="WebMap\WebMapView.xaml.cs">
       <DependentUpon>WebMapView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WepMap\WebMapViewModel.cs" />
+    <Compile Include="WebMap\WebMapViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -189,7 +196,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WepMap\WebMapView.xaml">
+    <Page Include="WebMap\WebMapView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

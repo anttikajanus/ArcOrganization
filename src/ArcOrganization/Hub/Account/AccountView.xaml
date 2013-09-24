@@ -5,11 +5,16 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:converters="clr-namespace:ArcOrganization.Infrastructure.Converters"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     mc:Ignorable="d"
     shell:SystemTray.IsVisible="True">
+    <UserControl.Resources>
+        <converters:BytesToMegabytesTextConverter x:Key="BytesConverter"/>
+        <converters:DateTimeYearDateTimeTextConverter x:Key="ToLocalTimeConverter"/>
+    </UserControl.Resources>
     <Grid>
 
         <Grid>
@@ -34,37 +39,36 @@
                 <TextBlock Text="{Binding UserInformation.Email}" Style="{StaticResource PhoneTextSmallStyle}" />
             </StackPanel>
             <TextBlock Text="{Binding UserInformation.Description}"
-                       Margin="5"
+                       Margin="5, 45, 5, 5"
                        Grid.Row="2" Grid.ColumnSpan="2"
                        TextWrapping="Wrap" />
             <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal">
-                <TextBlock Text="Created : " Style="{StaticResource PhoneTextLargeStyle}" />
-                <TextBlock Text="{Binding UserInformation.CreationDate}" Style="{StaticResource PhoneTextNormalStyle}"
+                <TextBlock Text="Created : " Style="{StaticResource PhoneTextNormalStyle}" />
+                <TextBlock Text="{Binding UserInformation.CreationDate, Converter={StaticResource ToLocalTimeConverter}}" Style="{StaticResource PhoneTextNormalStyle}"
                            VerticalAlignment="Center">
                 </TextBlock>
             </StackPanel>
 
             <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal">
-                <TextBlock Text="Role : " Style="{StaticResource PhoneTextLargeStyle}" />
+                <TextBlock Text="Role : " Style="{StaticResource PhoneTextNormalStyle}" />
                 <TextBlock Text="{Binding UserInformation.Role}" Style="{StaticResource PhoneTextNormalStyle}"
                            VerticalAlignment="Center">
                 </TextBlock>
             </StackPanel>
 
             <StackPanel Grid.Row="5" Grid.ColumnSpan="2" Orientation="Horizontal">
-                <TextBlock Text="Storage quota : " Style="{StaticResource PhoneTextLargeStyle}" />
-                <TextBlock Text="{Binding UserInformation.StorageQuota}" Style="{StaticResource PhoneTextNormalStyle}"
+                <TextBlock Text="Storage quota : " Style="{StaticResource PhoneTextNormalStyle}" />
+                <TextBlock Text="{Binding UserInformation.StorageQuota, Converter={StaticResource BytesConverter}}" Style="{StaticResource PhoneTextNormalStyle}"
                            VerticalAlignment="Center">
                 </TextBlock>
             </StackPanel>
 
             <StackPanel Grid.Row="6" Grid.ColumnSpan="2" Orientation="Horizontal">
-                <TextBlock Text="Storage used : " Style="{StaticResource PhoneTextLargeStyle}" />
-                <TextBlock Text="{Binding UserInformation.StorageUsage}" Style="{StaticResource PhoneTextNormalStyle}"
+                <TextBlock Text="Storage used : " Style="{StaticResource PhoneTextNormalStyle}" />
+                <TextBlock Text="{Binding UserInformation.StorageUsage, Converter={StaticResource BytesConverter}}" Style="{StaticResource PhoneTextNormalStyle}"
                            VerticalAlignment="Center">
                 </TextBlock>
             </StackPanel>
-
 
         </Grid>
     </Grid>

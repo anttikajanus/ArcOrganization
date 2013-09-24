@@ -12,7 +12,7 @@
 
     using ESRI.ArcGIS.Client.Portal;
 
-    public class NewServicesViewModel : WebMapListViewModel 
+    public class NewServicesViewModel : WebMapListViewModel
     {
         private readonly PortalService _portalService;
 
@@ -46,23 +46,27 @@
         /// Load Recent items asynchronously
         /// </summary>
         public override async Task LoadContentAsync()
-        {           
-            try
-            {
-                var results = await _portalService.GetNewestOrganizationFeatureServicesAsync();
-                if (results == null)
-                {
-                    return;
-                }
+        {
+            await Task.Run(
+                async () =>
+                    {
+                        try
+                        {
+                            var results = await _portalService.GetNewestOrganizationFeatureServicesAsync();
+                            if (results == null)
+                            {
+                                return;
+                            }
 
-                Items = new BindableCollection<ArcGISPortalItem>(results);
-                IsLoaded = true;
-            }
-            catch (Exception exception)
-            {
-                // TODO
-            }
+                            Items = new BindableCollection<ArcGISPortalItem>(results);
+                            IsLoaded = true;
+                        }
+                        catch (Exception exception)
+                        {
+                            // TODO
+                        }
+                    });
+
         }
-      
     }
 }

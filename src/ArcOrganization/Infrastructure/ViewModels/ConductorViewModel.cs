@@ -20,6 +20,8 @@
 
         private bool _isLoaded;
 
+        private DateTime _contentLoaded;
+
         /// <summary>
         /// Gets or sets a value indicating whether the ViewModel is busy like initializing or searching.
         /// </summary>
@@ -115,7 +117,28 @@
             if (!IsLoaded)
             {
                 SetBusy();
+                
+                //await Task.Run(async () =>
+                //{
+                    await LoadAllContentAsync();
+                IsLoaded = true;
+                _contentLoaded = DateTime.Now;   
+                //}).ContinueWith(t => 
+                //    {
+                        SetNotBusy();
+//                    }, TaskScheduler.FromCurrentSynchronizationContext()); 
+            }
+            else
+            {
+                var refeshTime = DateTime.Now.AddMinutes(-10);
+                if (_contentLoaded > refeshTime)
+                {
+                    return;
+                }
+
                 await LoadAllContentAsync();
+                IsLoaded = true;
+                _contentLoaded = DateTime.Now;
                 SetNotBusy();
             }
 

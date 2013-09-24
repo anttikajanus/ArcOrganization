@@ -17,6 +17,8 @@
 
         private readonly INavigationService _navigationService;
 
+        private DateTime _contentLoaded;
+
         public HubViewModel(
             NewMapsViewModel newMapsViewModel,
             NewServicesViewModel newServicesViewModel,
@@ -37,6 +39,7 @@
             try
             {
                 await LoadAllContentAsync();
+                _contentLoaded = DateTime.Now;
             }
             catch (Exception)
             {
@@ -48,13 +51,5 @@
         {
             // TODO
         }
-
-        //protected override async void ExecuteInitialization()
-        //{
-        //    await this._portalService.InitializeAsync();
-        //    await this.LoadDataAsync();
-
-        //    base.ExecuteInitialization();
-        //}
     }
 }

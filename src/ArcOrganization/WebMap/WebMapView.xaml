@@ -1,5 +1,5 @@
 ﻿<phone:PhoneApplicationPage
-    x:Class="ArcOrganization.WepMap.WebMapView"
+    x:Class="ArcOrganization.WebMap.WebMapView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
@@ -13,7 +13,6 @@
     xmlns:converters="clr-namespace:ArcOrganization.Infrastructure.Converters"
     xmlns:cal="clr-namespace:Caliburn.Micro;assembly=Caliburn.Micro"
     xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
-    xmlns:controls1="clr-namespace:ArcOrganization.Infrastructure.Controls"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -81,6 +80,24 @@
                            TextWrapping="Wrap" />
             </Grid>
         </DataTemplate>
+        <DataTemplate x:Key="PopupTemplate">
+            <Grid>
+                <ListBox ItemsSource="{Binding Attributes}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding Key}"></TextBlock>
+                                <TextBlock Text="{Binding Value}"></TextBlock>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>                     
+                </ListBox>
+            </Grid>
+        </DataTemplate>
     </phone:PhoneApplicationPage.Resources>
 
 
@@ -100,15 +117,7 @@
                             Foreground="Black"
                             Background="White"
                             BorderBrush="Black">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock
-                    x:Name="InfoTitle"
-                    Foreground="Black"
-                    VerticalAlignment="Center" HorizontalAlignment="Center" />
-                <Button Margin="10,0,0,0" Foreground="Black" Click="OpenDetails">
-                    <Image Source="../Assets/NavigateToNext.png" Height="24" Width="24" />
-                </Button>
-            </StackPanel>
+            <TextBlock>test</TextBlock>
         </toolkit:InfoWindow>
 
         <!-- Table of Content -->
@@ -143,7 +152,7 @@
             </Grid>
         </esriPrimitives:ChildPage>
 
-        <!-- Legend -->
+        <!-- Details view -->
         <esriPrimitives:ChildPage x:Name="DetailsPage" IsOpen="False">
             <ContentControl x:Name="DetailsContainer"></ContentControl>
         </esriPrimitives:ChildPage>
@@ -181,12 +190,13 @@
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
             <shell:ApplicationBar.MenuItems>
                 <shell:ApplicationBarMenuItem Text="Change basemap" Click="ChangeWebMap" />
-                <shell:ApplicationBarMenuItem Text="Add service" Click="OpenSearchPage" />
+                <!--<shell:ApplicationBarMenuItem Text="Add service" Click="OpenSearchPage" />-->
+                <cal:AppBarMenuItem Text="Pin to start screen"  Message="CreateSecondaryTile" />
             </shell:ApplicationBar.MenuItems>
             <shell:ApplicationBarIconButton IconUri="/Assets/appbar.layers.png" Text="Sisältö"
                                             Click="OpenTableOfContents" />
-            <shell:ApplicationBarIconButton IconUri="/Assets/appbar.location.circle.png" Text="Kohdista"
-                                            Click="PanToGPS" />
+            <cal:AppBarButton IconUri="/Assets/appbar.location.circle.png" Text="Kohdista"
+                                            Message="EnableGPS" />
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
 </phone:PhoneApplicationPage>

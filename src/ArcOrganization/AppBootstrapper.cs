@@ -9,6 +9,8 @@
     using System.Windows.Controls;
     using System.Windows.Navigation;
 
+    using ArcOrganization.Settings;
+
     using Autofac;
 
     using Caliburn.Micro;
@@ -37,6 +39,9 @@
                    .AsSelf()
                 // As singleton.
                    .SingleInstance();
+
+            builder.RegisterType<ProtectDataAdapter>().As<IProtectData>();           
+            builder.RegisterType<SettingsStore>().As<ISettingsStore>();
 
             RootFrame.Navigated += RootFrameNavigated;
         }

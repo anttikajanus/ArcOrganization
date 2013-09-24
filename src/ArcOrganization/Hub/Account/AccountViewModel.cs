@@ -51,7 +51,7 @@
         public override async Task LoadContentAsync()
         {
             UserInformation = await _portalService.GetUserInformationAsync();
-            base.LoadContentAsync();
+            await base.LoadContentAsync();
         }
 
     }

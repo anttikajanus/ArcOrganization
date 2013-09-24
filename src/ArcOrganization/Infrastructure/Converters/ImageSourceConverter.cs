@@ -42,7 +42,6 @@
 
             if (value is Uri)
             {
-                // TODO Why this is not showing in image?
                 Debug.WriteLine(value.ToString());
                 return new BitmapImage(new Uri(value.ToString(), UriKind.Absolute));
             }

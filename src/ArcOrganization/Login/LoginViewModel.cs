@@ -1,12 +1,16 @@
-﻿namespace ArcOrganization
+﻿namespace ArcOrganization.Login
 {
     using System;
+    using System.Net;
     using System.Threading.Tasks;
     using System.Windows.Controls;
 
     using ArcOrganization.Hub;
+    using ArcOrganization.Infrastructure;
     using ArcOrganization.Infrastructure.ViewModels;
     using ArcOrganization.Services;
+    using ArcOrganization.Settings;
+    using ArcOrganization.WebMap;
 
     using Caliburn.Micro;
 
@@ -16,6 +20,8 @@
 
         private readonly PortalService _portalService;
 
+        private readonly ISettingsStore _settingsStore;
+
         private PasswordBox _passwordBox;
 
         private string _username;
@@ -23,6 +29,10 @@
         private bool _canLogin;
 
         private string _errorMessage;
+
+        private string _webMapId;
+
+        private bool _rememberMe;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LoginViewModel"/> class. 
@@ -33,13 +43,15 @@
         /// <param name="portalService">
         /// The portal service.
         /// </param>
-        public LoginViewModel(INavigationService navigationService, PortalService portalService)
+        public LoginViewModel(INavigationService navigationService, PortalService portalService, ISettingsStore settingsStore )
         {
             _navigationService = navigationService;
             _portalService = portalService;
+            _settingsStore = settingsStore;
 
             // Set default values
-            Username = "kajanus_dev";
+            Username = _settingsStore.UserName;
+            RememberMe = _settingsStore.RememberMe;
             CanLogin = true;
         }
 
@@ -61,6 +73,26 @@
                 }
                 _username = value;
                 NotifyOfPropertyChange(() => Username);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the credentials are stored in to application.
+        /// </summary>
+        public bool RememberMe
+        {
+            get
+            {
+                return _rememberMe;
+            }
+            set
+            {
+                if (value.Equals(_rememberMe))
+                {
+                    return;
+                }
+                _rememberMe = value;
+                NotifyOfPropertyChange(() => RememberMe);
             }
         }
 
@@ -107,16 +139,45 @@
         }
 
         /// <summary>
+        /// Gets or sets the WebMap id where app is navigated to.
+        /// </summary>
+        public string WebMapId
+        {
+            get
+            {
+                return _webMapId;
+            }
+            set
+            {
+                if (value == _webMapId)
+                {
+                    return;
+                }
+                _webMapId = value;
+                NotifyOfPropertyChange(() => WebMapId);
+            }
+        }
+
+        /// <summary>
         /// Logs user into the application with given credentials.
         /// </summary>
         /// <param name="password"></param>
         public async void Login(string password)
         {
-            SetBusy("Logining...");
-            ErrorMessage = string.Empty;
-            CanLogin = false;
+            try
+            {
+                SetBusy("Logining...");
+                ErrorMessage = string.Empty;
+                CanLogin = false;
 
-            await LoginAndNavigateAsync();
+                await LoginAndNavigateAsync();
+            }
+            catch (Exception exception)
+            {
+                ErrorMessage = exception.Message;
+                CanLogin = true;
+                SetNotBusy();
+            }
         }
 
         private async Task LoginAndNavigateAsync()
@@ -125,7 +186,21 @@
             {
                 // Generates token for the user and then naviates to Map view.
                 await _portalService.InitializeAsync(Username, _passwordBox.Password);
-                _navigationService.UriFor<HubViewModel>().WithParam(p => p.RemoveFromBackstackNavigation, true).Navigate();
+                if (RememberMe)
+                {
+                    _settingsStore.UserName = Username;
+                    _settingsStore.Password = _passwordBox.Password;
+                }
+                
+                if (string.IsNullOrEmpty(WebMapId))
+                {
+                    _navigationService.UriFor<HubViewModel>().WithParam(p => p.RemoveFromBackstackNavigation, true).Navigate();                   
+                }
+                else
+                {
+                    _navigationService.UriFor<WebMapViewModel>().WithParam(p => p.RemoveFromBackstackNavigation, true).WithParam(p => p.WebMapId, WebMapId).Navigate();
+                }
+
                 SetNotBusy();
             }
             catch (Exception exception)
@@ -143,7 +218,7 @@
         protected override void OnViewLoaded(object view)
         {
             _passwordBox = (view as LoginView).PasswordBox;
-            _passwordBox.Password = "PreviousCheckInIsChangedForNow:)";
+            _passwordBox.Password = _settingsStore.Password;
             base.OnViewLoaded(view);
         }
     }
