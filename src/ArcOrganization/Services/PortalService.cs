@@ -7,7 +7,6 @@
     using System.Threading.Tasks;
 
     using ArcOrganization.Infrastructure.Extensions;
-    using ArcOrganization.Settings;
 
     using Caliburn.Micro;
 
@@ -15,20 +14,14 @@
     using ESRI.ArcGIS.Client.Portal;
     using ESRI.ArcGIS.Client.WebMap;
 
-    public class PortalService : PropertyChangedBase 
+    public class PortalService : PropertyChangedBase
     {
-        private readonly ISettingsStore _settingsStore;
-
         private ArcGISPortal _portal;
 
-        private ArcGISPortalUser _userInformation;
+        private List<ArcGISPortalItem> _loadedWebMapItems;
 
-        private List<ArcGISPortalItem> _organizationalWebMapsFromCache; 
-        private List<ArcGISPortalItem> _loadedWebMapItems; 
-
-        public PortalService(ISettingsStore settingsStore)
+        public PortalService()
         {
-            _settingsStore = settingsStore;
             _portal = new ArcGISPortal();
             _loadedWebMapItems = new List<ArcGISPortalItem>();
         }
@@ -42,7 +35,7 @@
 
             return _portal.CurrentUser;
         }
-        
+
         public async Task InitializeAsync(string username, string password)
         {
             if (_portal.IsInitialized)
@@ -52,10 +45,11 @@
 
             try
             {
-                var credential = await IdentityManager.Current.GetCredentialsAsync(username, password, "ArcOrganization");
+                var credential =
+                    await IdentityManager.Current.GetCredentialsAsync(username, password, "ArcOrganization");
                 _portal.Credentials = credential.Credentials;
 
-                 await _portal.InitializeAsync();
+                await _portal.InitializeAsync();
             }
             catch (Exception exception)
             {
@@ -65,12 +59,6 @@
 
         public async Task<IEnumerable<ArcGISPortalItem>> LoadBasemapGalleryAsync(int limit = 10)
         {
-            //var basemapsFromCache = _settingsStore.BasemapItems;
-            //if (basemapsFromCache.Count > 0)
-            //{
-            //    return basemapsFromCache;
-            //}
-
             var parameters = new SearchParameters() { Limit = limit };
 
             // Load ArcGISPortalItems from the Online that contains basemaps.
@@ -78,10 +66,7 @@
 
             /// Note that basemaps provided by the Esri Finland doesn't contain Name value
             var filteredItems = items.Where(basemap => !string.IsNullOrEmpty(basemap.Name)).ToList();
-            var results  = filteredItems.Where(l => !l.Name.Contains("Bing"));
-
-            //_settingsStore.BasemapItems = results.ToList();
-            //_settingsStore.BasemapItemsSaved = DateTime.Now;
+            var results = filteredItems.Where(l => !l.Name.Contains("Bing"));
 
             // Filter away Bing maps since we don't have a token.
             return results;
@@ -99,7 +84,8 @@
             return result.Map;
         }
 
-        public async Task<IEnumerable<ArcGISPortalItem>> GetNewestOrganizationWebMapsAsync(int limit = 10, bool cache = true)
+        public async Task<IEnumerable<ArcGISPortalItem>> GetNewestOrganizationWebMapsAsync(
+            int limit = 10, bool cache = true)
         {
             if (!_portal.IsInitialized)
             {
@@ -107,59 +93,26 @@
             }
 
             IEnumerable<ArcGISPortalItem> results;
-            //IEnumerable<ArcGISPortalItem> results = await Task.Run(
-            //    async () =>
-            //        {
 
             Debug.WriteLine(DateTime.Now.ToLongTimeString());
 
-            //if (_settingsStore.NewestOrganizationWebMapsSaved > DateTime.Now.AddHours(-1))
-            //{
-            //    if (_organizationalWebMapsFromCache == null)
-            //    {
-            //        // Get items only once from cache.
-            //        _organizationalWebMapsFromCache = _settingsStore.NewestOrganizationWebMapItems;
-            //    }
-            //    if (_organizationalWebMapsFromCache.Count > 0)
-            //    {
-            //        foreach (var item in _organizationalWebMapsFromCache)
-            //        {
+            var parameters = new SearchParameters
+                                 {
+                                     Limit = limit,
+                                     QueryString =
+                                         string.Format(
+                                             "accountid:\"{0}\" AND type:\"Web Map\" AND -type:\"Web Mapping Application\"",
+                                             _portal.CurrentUser.OrgId),
+                                     SortField = "uploaded",
+                                     SortOrder = QuerySortOrder.Descending
+                                 };
 
-            //        }
-            //        Debug.WriteLine(DateTime.Now.ToLongTimeString());
-            //        return _organizationalWebMapsFromCache;
-            //    }
-            //}
+            var searchResults = await _portal.SearchItemsAsync(parameters);
+            _loadedWebMapItems.AddRange(searchResults);
 
-                        var parameters = new SearchParameters
-                                             {
-                                                 Limit = limit,
-                                                 QueryString =
-                                                     string.Format(
-                                                         "accountid:\"{0}\" AND type:\"Web Map\" AND -type:\"Web Mapping Application\"",
-                                                         _portal.CurrentUser.OrgId),
-                                                 SortField = "uploaded",
-                                                 SortOrder = QuerySortOrder.Descending
-                                             };
+            Debug.WriteLine(DateTime.Now.ToLongTimeString());
 
-                        var searchResults = await _portal.SearchItemsAsync(parameters);
-                        _loadedWebMapItems.AddRange(searchResults);
-                        //if (cache)
-                        //{
-                        //    Task.Factory.StartNew(
-                        //        () =>
-                        //            {
-                        //                _settingsStore.NewestOrganizationWebMapItems = searchResults.ToList();
-                        //                _settingsStore.NewestOrganizationWebMapsSaved = DateTime.Now;
-                        //            });
-                            
-                        //}
-                        Debug.WriteLine(DateTime.Now.ToLongTimeString());
-
-                        return searchResults;
-                    //});
-
-            return results;
+            return searchResults;
         }
 
         public async Task<IEnumerable<ArcGISPortalItem>> GetNewestOrganizationFeatureServicesAsync(int limit = 10)
@@ -168,22 +121,23 @@
             {
                 throw new Exception("Portal is not initialized.");
             }
-            
-            IEnumerable<ArcGISPortalItem> results = await Task.Run(async () =>
-            {
-                var parameters = new SearchParameters
-                {
-                    Limit = limit,
-                    QueryString =
-                        string.Format(
-                            "accountid:\"{0}\" AND type:\"Feature Service\"",
-                            _portal.CurrentUser.OrgId),
-                    SortField = "uploaded",
-                    SortOrder = QuerySortOrder.Descending
-                };
 
-                return await _portal.SearchItemsAsync(parameters);
-            });
+            IEnumerable<ArcGISPortalItem> results = await Task.Run(
+                async () =>
+                    {
+                        var parameters = new SearchParameters
+                                             {
+                                                 Limit = limit,
+                                                 QueryString =
+                                                     string.Format(
+                                                         "accountid:\"{0}\" AND type:\"Feature Service\"",
+                                                         _portal.CurrentUser.OrgId),
+                                                 SortField = "uploaded",
+                                                 SortOrder = QuerySortOrder.Descending
+                                             };
+
+                        return await _portal.SearchItemsAsync(parameters);
+                    });
 
             return results;
         }
@@ -201,11 +155,7 @@
                 return _cachedItem;
             }
 
-            var parameters = new SearchParameters
-            {
-                Limit = 1,
-                QueryString = string.Format("id:\"{0}\"", id)
-            };
+            var parameters = new SearchParameters { Limit = 1, QueryString = string.Format("id:\"{0}\"", id) };
 
             var results = await _portal.SearchItemsAsync(parameters);
             if (results.Count() == 1)
@@ -214,7 +164,7 @@
                 _loadedWebMapItems.Add(result);
                 return result;
             }
-            
+
             return null;
         }
     }
