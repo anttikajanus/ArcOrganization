@@ -64,7 +64,7 @@
             // Load ArcGISPortalItems from the Online that contains basemaps.
             var items = await _portal.LoadBasemapGalleryAsync(parameters);
 
-            /// Note that basemaps provided by the Esri Finland doesn't contain Name value
+            // Note that basemaps provided by the Esri Finland doesn't contain Name value
             var filteredItems = items.Where(basemap => !string.IsNullOrEmpty(basemap.Name)).ToList();
             var results = filteredItems.Where(l => !l.Name.Contains("Bing"));
 

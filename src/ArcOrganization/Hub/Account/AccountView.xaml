@@ -32,7 +32,7 @@
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
 
-            <Image Source="{Binding UserInformation.ThumbnailUri}" Height="120" Width="120" Stretch="Fill" />
+            <Image Source="{Binding UserInformation.ThumbnailUri}" Height="120" Width="120" Stretch="UniformToFill" />
             <StackPanel Grid.Column="1" Margin="5,0,0,0">
                 <TextBlock Text="{Binding UserInformation.FullName}" Style="{StaticResource PhoneTextLargeStyle}" />
                 <TextBlock Text="{Binding UserInformation.UserName}" Style="{StaticResource PhoneTextNormalStyle}" />

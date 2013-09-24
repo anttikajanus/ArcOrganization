@@ -31,7 +31,7 @@
                 <!-- Icon -->
                 <Image Source="{Binding ThumbnailUri, Converter={StaticResource ImageConvetrer}}"
                        Width="100" Height="100"
-                       Stretch="Fill"
+                       Stretch="UniformToFill"
                        Grid.Row="1" />
                 <!-- Short description -->
                 <StackPanel Grid.Column="1" Grid.Row="1"
